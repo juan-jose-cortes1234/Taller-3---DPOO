@@ -1,6 +1,6 @@
 package uniandes.dpoo.aerolinea.modelo;
-
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,12 +9,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
+
 import uniandes.dpoo.aerolinea.exceptions.InformacionInconsistenteException;
 import uniandes.dpoo.aerolinea.exceptions.VueloSobrevendidoException;
 import uniandes.dpoo.aerolinea.modelo.cliente.Cliente;
 import uniandes.dpoo.aerolinea.persistencia.CentralPersistencia;
 import uniandes.dpoo.aerolinea.persistencia.IPersistenciaAerolinea;
 import uniandes.dpoo.aerolinea.persistencia.IPersistenciaTiquetes;
+import uniandes.dpoo.aerolinea.persistencia.PersistenciaAerolineaPlaintext;
+import uniandes.dpoo.aerolinea.persistencia.PersistenciaTiquetesJson;
 import uniandes.dpoo.aerolinea.persistencia.TipoInvalidoException;
 import uniandes.dpoo.aerolinea.tiquetes.Tiquete;
 
@@ -164,6 +168,14 @@ public class Aerolinea
     public Vuelo getVuelo( String codigoRuta, String fechaVuelo )
     {
         // TODO implementar
+    	//boolean found = false;
+    	for (Iterator<Vuelo> iterator = this.vuelos.iterator(); iterator.hasNext();) {
+    		Vuelo vuelo = iterator.next();
+    		if (vuelo.getFecha().equals(fechaVuelo) && vuelo.getRuta().getCodigoRuta().equals(codigoRuta)) {
+    			//found = true;
+    			return vuelo;
+    		}
+    	}
         return null;
     }
 
@@ -183,7 +195,15 @@ public class Aerolinea
     public Collection<Tiquete> getTiquetes( )
     {
         // TODO implementar
-        return null;
+        Collection<Tiquete> result = new ArrayList<Tiquete>();
+        for (Iterator<Vuelo> iterator = this.vuelos.iterator(); iterator.hasNext();) {
+        	Vuelo vuelo = iterator.next();
+        	for (Iterator<Tiquete> iterator2 = vuelo.getTiquetes().iterator();iterator2.hasNext();) {
+        		Tiquete tiquete = iterator2.next();
+        		result.add(tiquete);
+        	}
+        }
+        return result;
 
     }
 
@@ -204,6 +224,27 @@ public class Aerolinea
     public void cargarAerolinea( String archivo, String tipoArchivo ) throws TipoInvalidoException, IOException, InformacionInconsistenteException
     {
         // TODO implementar
+    	if (!tipoArchivo.equals("CentralPersistencia.JSON") && !tipoArchivo.equals("CentralPersistencia.PLAIN")) {
+    		throw new TipoInvalidoException(tipoArchivo);
+    	}
+    	try {
+    		if (tipoArchivo.equals("CentralPersistencia.JSON")) {
+    			PersistenciaTiquetesJson cargadorJson =  new PersistenciaTiquetesJson();
+    			cargadorJson.cargarTiquetes(archivo, this);
+    		}else {
+    			PersistenciaAerolineaPlaintext cargadorPlain = new PersistenciaAerolineaPlaintext();
+    			cargadorPlain.cargarAerolinea(archivo, this);
+    		}
+    		
+    		
+            
+    	}catch (IOException e){
+    		throw e;
+    		
+    	}catch (InformacionInconsistenteException ei) {
+    		throw ei;
+    	}
+    	
     }
 
     /**
@@ -216,6 +257,16 @@ public class Aerolinea
     public void salvarAerolinea( String archivo, String tipoArchivo ) throws TipoInvalidoException, IOException
     {
         // TODO implementar
+    	if (!tipoArchivo.equals("CentralPersistencia.JSON") && !tipoArchivo.equals("CentralPersistencia.PLAIN")) {
+    		throw new TipoInvalidoException(tipoArchivo);
+    	}
+    	try {
+    		IPersistenciaAerolinea PA = CentralPersistencia.getPersistenciaAerolinea(archivo);
+            
+    	}catch (IOException e){
+    		throw e;
+    		
+    	}
     }
 
     /**

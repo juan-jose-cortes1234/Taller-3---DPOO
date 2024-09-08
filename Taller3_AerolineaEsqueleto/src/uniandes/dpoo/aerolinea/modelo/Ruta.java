@@ -49,6 +49,7 @@ public class Ruta
 		if (horaS > horaL) {
 			int duracion = (24-horaS)*60 + horaL*60 + minutosL + minutosS;
 			return duracion;
+			
 		}else {
 			int duracion = (horaL-horaS)*60 + minutosL + minutosS;
 			return duracion;

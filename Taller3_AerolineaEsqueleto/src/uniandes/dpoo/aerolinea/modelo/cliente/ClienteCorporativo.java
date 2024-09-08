@@ -8,6 +8,32 @@ import org.json.JSONObject;
 public class ClienteCorporativo extends Cliente
 {
     // TODO completar
+	public static final String CORPORATIVO = "Corporativa";
+	public static static final int GRANDE = 1;
+	public static final int MEDIANA = 2;
+	public static final int PEQUENA = 3;
+	private String nombreEmpresa;
+	private int tamanoEmpresa;
+	
+	public ClienteCorporativo(String nombreEmpresa, int tamano) {
+		this.nombreEmpresa = nombreEmpresa;
+		this.tamanoEmpresa = tamano;
+	}
+	public String getIdentificador() {
+		return String.valueOf(this.nombreEmpresa.hashCode());
+		//return null;
+	}
+	public String getNombreEmpresa() {
+		return this.nombreEmpresa;
+		
+	}
+	public int getTamanoEmpresa() {
+		return this.tamanoEmpresa;
+	}
+	public String getTipoCliente() {
+		return this.CORPORATIVO;
+	}
+	
     
 
 
