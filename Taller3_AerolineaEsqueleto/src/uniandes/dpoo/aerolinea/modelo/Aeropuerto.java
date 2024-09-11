@@ -14,12 +14,12 @@ public class Aeropuerto
 {
     // TODO completar
 	private String codigo;
-	private static Set<String> codigosUtilizados;
+	private static Set<String> codigosUtilizados = new HashSet<String>();
 	private double latitud;
 	private double longitud;
 	private String nombre;
 	private String nombreCiudad;
-	private static int RADIO_TERRESTRE;
+	private static final int RADIO_TERRESTRE = 6371;
 	
 	public Aeropuerto(String nombre, String codigo, String nombreCiudad, double latitud, double longitud) {
 		this.nombre = nombre;
@@ -27,8 +27,11 @@ public class Aeropuerto
 		this.latitud = latitud;
 		this.longitud = longitud;
 		this.codigo = codigo;
-		this.RADIO_TERRESTRE = 6371;
-		this.codigosUtilizados = new HashSet<String>();
+		
+		//verificar si el codigo ya existe o no
+		
+		//this.RADIO_TERRESTRE = 6371;
+		//this.codigosUtilizados = new HashSet<String>();
 	}
 	public String getCodigo() {
 		return this.codigo;

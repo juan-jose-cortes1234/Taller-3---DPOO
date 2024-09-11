@@ -48,7 +48,7 @@ public class GeneradorTiquetes
     public static void registrarTiquete( Tiquete unTiquete )
     {
         // TODO implementar
-    	codigos.add(unTiquete.getcodigo());
+    	codigos.add(unTiquete.getCodigo());
     }
 
     /**

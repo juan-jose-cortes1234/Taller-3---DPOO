@@ -5,16 +5,14 @@ import uniandes.dpoo.aerolinea.modelo.Vuelo;
 import uniandes.dpoo.aerolinea.modelo.cliente.Cliente;
 
 public class CalculadoraTarifasTemporadaAlta extends CalculadoraTarifas{
-	protected int COSTO_POR_KM;
+	protected final int COSTO_POR_KM = 1000;
 	
-	public CalculadoraTarifasTemporadaAlta() {
-		this.COSTO_POR_KM = 1000;
-	}
+	public CalculadoraTarifasTemporadaAlta() {};
 	public int calcularCostoBase(Vuelo vuelo, Cliente cliente) {
 		Ruta ruta = vuelo.getRuta();
 		
 		int distancia = calcularDistanciaVuelo(ruta);
-		return distancia * this.COSTO_POR_KM;
+		return distancia * COSTO_POR_KM;
 	}
 	public double calcularPorcentajeDescuento(Cliente cliente) {
 		return 0;

@@ -20,6 +20,9 @@ public abstract class Cliente {
 		for (Iterator<Tiquete> iterator = this.tiquetesSinUsar.iterator();iterator.hasNext();) {
 			valorTotal = valorTotal + iterator.next().getTarifa();
 		}
+		//for (Iterator<Tiquete> iterator = this.tiquetesUsados.iterator();iterator.hasNext();) {
+		//	valorTotal = valorTotal + iterator.next().getTarifa();
+		//}
 		return valorTotal;
 	}
 	public abstract String getIdentificador();
@@ -28,6 +31,7 @@ public abstract class Cliente {
 	public void usarTiquetes(Vuelo vuelo) {
 		for (Iterator<Tiquete> iterator = this.tiquetesSinUsar.iterator(); iterator.hasNext();) {
 			Tiquete tiquete= iterator.next();
+			
 			if (tiquete.getVuelo().equals(vuelo)) {
 				tiquete.marcarComoUsado();
 			}

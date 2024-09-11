@@ -14,12 +14,15 @@ import org.json.JSONObject;
 import uniandes.dpoo.aerolinea.exceptions.InformacionInconsistenteException;
 import uniandes.dpoo.aerolinea.exceptions.VueloSobrevendidoException;
 import uniandes.dpoo.aerolinea.modelo.cliente.Cliente;
+import uniandes.dpoo.aerolinea.modelo.tarifas.CalculadoraTarifasTemporadaAlta;
+import uniandes.dpoo.aerolinea.modelo.tarifas.CalculadoraTarifasTemporadaBaja;
 import uniandes.dpoo.aerolinea.persistencia.CentralPersistencia;
 import uniandes.dpoo.aerolinea.persistencia.IPersistenciaAerolinea;
 import uniandes.dpoo.aerolinea.persistencia.IPersistenciaTiquetes;
 import uniandes.dpoo.aerolinea.persistencia.PersistenciaAerolineaPlaintext;
 import uniandes.dpoo.aerolinea.persistencia.PersistenciaTiquetesJson;
 import uniandes.dpoo.aerolinea.persistencia.TipoInvalidoException;
+import uniandes.dpoo.aerolinea.tiquetes.GeneradorTiquetes;
 import uniandes.dpoo.aerolinea.tiquetes.Tiquete;
 
 /**
@@ -224,13 +227,14 @@ public class Aerolinea
     public void cargarAerolinea( String archivo, String tipoArchivo ) throws TipoInvalidoException, IOException, InformacionInconsistenteException
     {
         // TODO implementar
+    	/*
     	if (!tipoArchivo.equals("CentralPersistencia.JSON") && !tipoArchivo.equals("CentralPersistencia.PLAIN")) {
     		throw new TipoInvalidoException(tipoArchivo);
     	}
     	try {
     		if (tipoArchivo.equals("CentralPersistencia.JSON")) {
-    			PersistenciaTiquetesJson cargadorJson =  new PersistenciaTiquetesJson();
-    			cargadorJson.cargarTiquetes(archivo, this);
+    			PersistenciaTiquetesJson cargadorJson =  new PersistenciaAerolineaJson();
+    			cargadorJson.cargarAerolinea(archivo, this);
     		}else {
     			PersistenciaAerolineaPlaintext cargadorPlain = new PersistenciaAerolineaPlaintext();
     			cargadorPlain.cargarAerolinea(archivo, this);
@@ -244,7 +248,9 @@ public class Aerolinea
     	}catch (InformacionInconsistenteException ei) {
     		throw ei;
     	}
-    	
+    	*/
+    	IPersistenciaAerolinea cargador = CentralPersistencia.getPersistenciaAerolinea( tipoArchivo );
+        cargador.cargarAerolinea( archivo, this );
     }
 
     /**
@@ -257,6 +263,7 @@ public class Aerolinea
     public void salvarAerolinea( String archivo, String tipoArchivo ) throws TipoInvalidoException, IOException
     {
         // TODO implementar
+    	/*
     	if (!tipoArchivo.equals("CentralPersistencia.JSON") && !tipoArchivo.equals("CentralPersistencia.PLAIN")) {
     		throw new TipoInvalidoException(tipoArchivo);
     	}
@@ -266,7 +273,10 @@ public class Aerolinea
     	}catch (IOException e){
     		throw e;
     		
-    	}
+    	}*/
+    	IPersistenciaAerolinea cargador = CentralPersistencia.getPersistenciaAerolinea( tipoArchivo );
+        cargador.salvarAerolinea( archivo, this );
+    	
     }
 
     /**
@@ -317,6 +327,27 @@ public class Aerolinea
     public void programarVuelo( String fecha, String codigoRuta, String nombreAvion ) throws Exception
     {
         // TODO Implementar el método
+    	//verificar si el avion y  si no esta ocupado en la misma fecha y si la ruta no esta cubierta
+    	try {
+    		Ruta ruta = this.getRuta(codigoRuta);
+    		//Avion avion;
+    		Object newAvion = new Object();
+    		for (Iterator<Avion> iterator = this.getAviones().iterator();iterator.hasNext();) {
+    			Avion posibleAvion = iterator.next();
+    			if (posibleAvion.getNombre().equals(nombreAvion)) {
+    				Avion avion = posibleAvion;
+    				Vuelo vuelo = new Vuelo(ruta, fecha, avion);
+    				this.vuelos.add(vuelo);
+    				
+    			}
+    		}
+    		//Vuelo vuelo = new Vuelo(ruta, fecha, avion);
+    		//this.vuelos.add(vuelo);
+    		
+    		
+    	}catch (Exception e) {
+    		throw e;
+    	}
     }
 
     /**
@@ -337,8 +368,58 @@ public class Aerolinea
     public int venderTiquetes( String identificadorCliente, String fecha, String codigoRuta, int cantidad ) throws VueloSobrevendidoException, Exception
     {
         // TODO Implementar el método
-        return -1;
+    	try {
+	    	Collection<Tiquete> tiquetes = getTiquetes();
+	    	
+			
+	    	int cantidadVendidos = 0;
+	    	Cliente cliente = getCliente(identificadorCliente);
+	    	Vuelo vuelo = getVuelo(fecha, codigoRuta);
+	    	int mes =Integer.parseInt(fecha.substring(3,5));
+	    	if ((mes >=1 && mes <=5) || (mes>=9 && mes<=11)) {
+	    		CalculadoraTarifasTemporadaBaja calculadoraTarifas = new CalculadoraTarifasTemporadaBaja();
+	    		//Tiquete tiquete = GeneradorTiquetes.generarTiquete(vuelo, cliente, calculadoraTarifas.calcularTarifa(vuelo, cliente));
+	    		//cliente.agregarTiquete(tiquete);
+	    		int valorTotal = vuelo.venderTiquetes(cliente, calculadoraTarifas, cantidad);
+	    		return valorTotal;
+	    		
+	    	}else {
+	    		CalculadoraTarifasTemporadaAlta calculadoraTarifas = new CalculadoraTarifasTemporadaAlta();
+	    		int valorTotal = vuelo.venderTiquetes(cliente, calculadoraTarifas, cantidad);
+	    		return valorTotal;
+	    	}
+	    	/*
+	    	for (Iterator<Tiquete> iterator = tiquetes.iterator();iterator.hasNext();) {
+	    		Tiquete tiquete = iterator.next();
+	    		
+	    		if (tiquete.getVuelo().getFecha().equals(fecha) && tiquete.getVuelo().getRuta().getCodigoRuta().equals(codigoRuta)) {
+	    			cantidadVendidos += 1;
+	    			valorTotal += tiquete.getTarifa();
+	    			
+	    			Tiquete tiqueteI = GeneradorTiquetes.generarTiquete(tiquete.getVuelo(), cliente, cantidadVendidos);
+	    			cliente.agregarTiquete(tiquete);
+	    			int espacioDisponible = tiquete.getVuelo().getAvion().getCapacidad() - tiquete.getVuelo().getTiquetes().size();
+	    			tiquete.getVuelo().getTiquetes().add(tiquete);
+	    			if (cantidad > espacioDisponible) {
+	    				throw new VueloSobrevendidoException(tiquete.getVuelo());
+	    			}
+	    		}
+	    		if (cantidadVendidos == cantidad) {
+	    			break;
+	    		}
+	    	}
+	    	
+	    	return valorTotal
+*/
+	    	
+    	}catch (VueloSobrevendidoException e1) {
+    		throw e1;
+    	}catch (Exception e) {
+    	
+    		throw e;
+    	}
     }
+	
 
     /**
      * Registra que un cierto vuelo fue realizado
@@ -348,6 +429,13 @@ public class Aerolinea
     public void registrarVueloRealizado( String fecha, String codigoRuta )
     {
         // TODO Implementar el método
+    	for (int i = 0; i< this.vuelos.size(); i++) {
+    		Vuelo vuelo = this.vuelos.get(i);
+    		if (vuelo.getFecha().equals(fecha) && vuelo.getRuta().getCodigoRuta().equals(codigoRuta)) {
+    			this.vuelos.remove(i); 
+    		}
+    	}
+    	
     }
 
     /**
@@ -358,7 +446,9 @@ public class Aerolinea
     public String consultarSaldoPendienteCliente( String identificadorCliente )
     {
         // TODO Implementar el método
-        return "";
+    	Cliente cliente = this.getCliente(identificadorCliente);
+    	int valorTotal = cliente.calcularValorTotalTiquetes();
+        return String.valueOf(valorTotal);
     }
 
 }

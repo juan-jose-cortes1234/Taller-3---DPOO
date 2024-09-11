@@ -6,11 +6,8 @@ import uniandes.dpoo.aerolinea.modelo.Vuelo;
 import uniandes.dpoo.aerolinea.modelo.cliente.Cliente;
 
 public abstract class CalculadoraTarifas {
-	static double IMPUESTO;
-	public CalculadoraTarifas() {
-		this.IMPUESTO = 0.28;
-		
-	}
+	public static final double IMPUESTO = 0.28;
+	public CalculadoraTarifas() {};
 	public abstract int calcularCostoBase(Vuelo vuelo, Cliente cliente) ;
 	
 	protected int calcularDistanciaVuelo(Ruta ruta) {
@@ -18,7 +15,7 @@ public abstract class CalculadoraTarifas {
 	}
 	protected abstract double calcularPorcentajeDescuento(Cliente cliente);
 	
-	protected int calcularTarifa(Vuelo vuelo, Cliente cliente) {
+	public int calcularTarifa(Vuelo vuelo, Cliente cliente) {
 		int costoBase = calcularCostoBase(vuelo, cliente);
 		double descuento = calcularPorcentajeDescuento(cliente);
 		int newCostoBase = (int) (costoBase -  costoBase * descuento);

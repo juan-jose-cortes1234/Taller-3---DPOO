@@ -16,6 +16,7 @@ public class Tiquete {
 		this.tarifa  =tarifa;
 		this.vuelo = vuelo;
 		this.usado = false;
+		clienteComprador.agregarTiquete(this);
 		
 	}
 	
@@ -26,11 +27,12 @@ public class Tiquete {
 		return this.cliente;
 	
 	}
-	public String getcodigo() {
+	public String getCodigo() {
 		return this.codigo;
 		
 	}
 	public int getTarifa() {
+		
 		return this.tarifa;
 	}
 	public Vuelo getVuelo() {
