@@ -340,6 +340,7 @@ public class Aerolinea
     				this.vuelos.add(vuelo);
     				
     			}
+    		
     		}
     		//Vuelo vuelo = new Vuelo(ruta, fecha, avion);
     		//this.vuelos.add(vuelo);

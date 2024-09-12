@@ -36,7 +36,7 @@ public class Vuelo {
 	}
 	@Override
 	public boolean equals(Object obj) {
-		//ESTO HAY QUE MODIFICARLO
+		
 		Vuelo otroVuelo = (Vuelo) obj;
 		boolean result = false;
 		if (this.avion.getNombre().equals(otroVuelo.getAvion().getNombre())) {
