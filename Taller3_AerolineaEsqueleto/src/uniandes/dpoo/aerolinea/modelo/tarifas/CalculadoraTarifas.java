@@ -24,7 +24,7 @@ public abstract class CalculadoraTarifas {
 		
 	}
 	protected int calcularValorImpuestos(int costoBase) {
-		int valorImpuestos =  (int) (costoBase*this.IMPUESTO);
+		int valorImpuestos =  (int) (costoBase*IMPUESTO);
 		return valorImpuestos;
 	}
 }
